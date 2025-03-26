@@ -1,12 +1,15 @@
 import { Sequelize } from 'sequelize'
 
+const isTest = process.env.NODE_ENV === 'test'
+
 const sequelize = new Sequelize(
-    'biblioteca',
+    isTest ? 'biblioteca_test' : 'biblioteca',
     'root',
-    '123456',
+    '',
     {
         host: 'localhost',
-        dialect: 'mysql'
+        dialect: 'mysql',
+        logging: !isTest
     }
 )
 
