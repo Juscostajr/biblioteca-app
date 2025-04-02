@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import UserModel from "../models/UserModel"
+import { validatePasswordMinimunLength, validateSchema } from "../validations/userValidations"
 
 // método que busca todos
 export const getAll = async (req: Request, res: Response) => {
@@ -24,9 +25,14 @@ export const createUser = async (req: Request, res: Response) => {
     try {
         const { name, email, password } = req.body
 
-        if (!name || !email || !password) {
+        if (!validateSchema(name,email,password)) {
             return res.status(400)
                 .json({error: 'Values required'})
+        }
+
+        if (!validatePasswordMinimunLength(password)) {
+            return res.status(400)
+                .json({error: 'Password must have a least 8 characters.'})
         }
         
         const user = await UserModel.create({ name, email, password})
